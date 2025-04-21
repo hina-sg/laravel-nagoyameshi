@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +21,3 @@ Route::get('/', function () {
 
 
 require __DIR__.'/auth.php';
-
-
-Route::get('/verify-email', [RegisteredUserController::class, 'store']);
