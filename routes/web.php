@@ -29,7 +29,7 @@ require __DIR__.'/auth.php';
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::get('home', [HomeController::class, 'index'])->name('home');
     Route::get('users/index', [UserController::class, "index"])->name('users.index');
-    Route::get("users/show", [UserController::class, "show"])->name('users.show');
+    Route::get("users/show/{id}", [UserController::class, "show"])->name('users.show');
 });
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
