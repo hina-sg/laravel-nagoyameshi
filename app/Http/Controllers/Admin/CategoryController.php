@@ -49,15 +49,15 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $categories)
+    public function update(Request $request, Category $category)
     {
         $request->validate([
             "name" => "required",
         ]);
 
-        $categories->name = $request->input("name");
+        $category->name = $request->input("name");
 
-        $categories->save();
+        $category->save();
 
         return redirect()->route("admin.categories.index")->with(["flash_message" => "カテゴリを編集しました。"]);
     }
@@ -65,9 +65,9 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $categories)
+    public function destroy(Category $category)
     {
-        $categories->delete();
+        $category->delete();
 
         return redirect()->route("admin.categories.index")->with(["flash_message" => "カテゴリを削除しました。"]);
     }
