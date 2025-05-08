@@ -150,7 +150,7 @@ class RestaurantTest extends TestCase
         $admin->password = Hash::make("nagoyameshi");
         $admin->save();
 
-        $response = $this->actingAs($admin, "admin")->get("/admin/restaurants/3/edit");
+        $response = $this->actingAs($admin, "admin")->get("/admin/restaurants", ["restaurant" => "3"], "/edit");
 
         $response->assertOK();
     }
@@ -172,18 +172,26 @@ class RestaurantTest extends TestCase
 
     public function test_admin_can_update_admin_restaurant(): void
     {
-        $new_restaurant = Restaurant::factory()->create();
-
         $admin = new Admin();
         $admin->email = "admin@example.com";
         $admin->password = Hash::make("nagoyameshi");
         $admin->save();
+        
+        $restaurant = Restaurant::factory()->create();
+        $new_restaurant = [
+            "name" => "アップデートテスト",
+            "description" => "新しい説明",
+            "lowest_price" => 1000,
+            "highest_price" => 2000,
+            "postal_code" => "1234567",
+            "address" => "新しい住所",
+            "opening_time" => "10:00",
+            "closing_time" => "20:00",
+            "seating_capacity" => 50,
+        ];
 
-        $response = $this->actingAs($admin, "admin")->get("/admin/restaurants/update/{$new_restaurant->id}", $new_restaurant);
-
-        $new_restaurant->update(["name" => "アップデーテスト"]);
-
-        $response->assertDatabaseHas("restaurants", ["name"=> "アップデーテスト"]);
+        $response = $this->actingAs($admin, "admin")->patch(route("admin.restaurants.update", ["restaurant" => $restaurant->id]), $new_restaurant);
+        $this->assertDatabaseHas("restaurants", ["name" => "アップデートテスト"]);
     }
 
     public function test_guest_can_not_destroy_admin_restaurant(): void
@@ -210,7 +218,8 @@ class RestaurantTest extends TestCase
         $admin->password = Hash::make("nagoyameshi");
         $admin->save();
 
-        $response = $this->actingAs($admin, "admin")->get("/admin/restaurants/destroy/{$new_restaurant->id}", $new_restaurant);
-        $response->assertDatabaseMissing("restaurants", ["name" => "テスト"]);
+    
+        $response = $this->actingAs($admin, "admin")->delete(route("admin.restaurants.destroy", ["restaurant" => $new_restaurant->id]));
+        $this->assertDatabaseMissing("restaurants", ["name" => "テスト"]);
     }
 }
