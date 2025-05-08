@@ -79,8 +79,7 @@ class RestaurantController extends Controller
 
         $restaurant->save();
 
-        $category_ids = array_filter($request->input('category_ids'));
-        $restaurant->categories()->sync($category_ids);
+
 
         return redirect()->route('admin.restaurants.index')->with(["flash_message" => "店舗を登録しました。"]);
     }
@@ -138,10 +137,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant->save();
-
-        $category_ids = array_filter($request->input('category_ids'));
-        $restaurant->categories()->sync($category_ids);
-
+        
         return redirect()->route("admin.restaurants.show", ["restaurant" => $restaurant->id])
         ->with(["flash_message" => "店舗を編集しました。"]);
 
