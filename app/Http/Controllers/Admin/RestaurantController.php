@@ -110,7 +110,7 @@ class RestaurantController extends Controller
 
         $regular_holidays = RegularHoliday::all();
 
-        return view("admin.restaurants.edit", compact("restaurant", "categories", "category_ids")); 
+        return view("admin.restaurants.edit", compact("restaurant", "categories", "category_ids", "regular_holidays")); 
     }
 
     /**
