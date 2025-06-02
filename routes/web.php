@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RestaurantController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\TermController;
+use App\Http\Controllers\UserHomeController;
 
 
 /*
@@ -19,11 +20,6 @@ use App\Http\Controllers\Admin\TermController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-
-Route::get('/', function () {
-    return view('welcome');
-});
 
 
 require __DIR__.'/auth.php';
@@ -48,4 +44,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
     Route::resource('terms', TermController::class);
+});
+
+Route::group(['middleware' => 'guest:admin'], function() {
+    Route::get("/", [UserHomeController::class, "index"])->name("home");
 });
