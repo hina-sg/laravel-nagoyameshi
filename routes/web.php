@@ -29,7 +29,7 @@ require __DIR__.'/auth.php';
 
 Route::group(['middleware' => 'guest:admin'], function () {
     Route::get('/', [UserHomeController::class, 'index'])->name('home');
-    Route::get("/restaurants", [UserRestaurantController::class, "index"])->name("restaurants.index");
+    Route::resource("/restaurants", UserRestaurantController::class)->only(["index", "show"]);
 });
 
 

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Admin;
+use App\Models\Restaurant;
 
 class RestaurantTest extends TestCase
 {
@@ -41,4 +42,37 @@ public function test_admin_can_not_access_restaurant_index(): void
 
     $response->assertRedirect(route("admin.home"));
 }
+
+public function test_guest_can_access_restaurant_show(): void
+{
+    $restaurant = Restaurant::factory()->create();
+    $response = $this->get(route("restaurants.show", $restaurant));
+
+    $response->assertStatus(200);
+}
+
+public function test_web_user_can_access_restaurant_show(): void
+{
+    $restaurant = Restaurant::factory()->create();
+
+    $user = User::factory()->create();
+    $response = $this->actingAs($user, "web")->get(route("restaurants.show", $restaurant));
+
+    $response->assertStatus(200);
+}
+
+public function test_admin_can_not_access_restaurant_show(): void
+{
+    $restaurant = Restaurant::factory()->create();
+
+    $admin = new Admin();
+    $admin->email = "admin@example.com";
+    $admin->password = Hash::make("nagoyameshi");
+    $admin->save();
+
+    $response = $this->actingAs($admin, "admin")->get(route("restaurants.show", $restaurant));
+
+    $response->assertRedirect(route("admin.home"));
+}
+
 }
