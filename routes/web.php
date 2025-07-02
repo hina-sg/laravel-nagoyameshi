@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserHomeController;
 use App\Http\Controllers\UserController as UserUserController;
+use App\Http\Controllers\RestaurantController as UserRestaurantController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RestaurantController;
@@ -28,6 +29,7 @@ require __DIR__.'/auth.php';
 
 Route::group(['middleware' => 'guest:admin'], function () {
     Route::get('/', [UserHomeController::class, 'index'])->name('home');
+    Route::get("/restaurants", [UserRestaurantController::class, "index"])->name("restaurants.index");
 });
 
 
