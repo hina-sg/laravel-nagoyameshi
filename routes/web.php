@@ -1,15 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\Subscribed;
+use App\Http\Middleware\NotSubscribed;
 use App\Http\Controllers\UserHomeController;
 use App\Http\Controllers\UserController as UserUserController;
 use App\Http\Controllers\RestaurantController as UserRestaurantController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RestaurantController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\TermController;
+
 
 
 
@@ -36,6 +40,19 @@ Route::group(['middleware' => 'guest:admin'], function () {
 Route::group(['middleware' => 'auth:web'], function() {
     Route::resource('user', UserUserController::class);
 });
+
+Route::group(["prefix" => "subscription", "as" => "subscription.", "middleware" => ["auth:web", "verified", "\App\Http\Middleware\NotSubscribed::class"]], function () {
+    Route::get("/create", [SubscriptionController::class, "create"])->name("create");
+    Route::post("/", [SubscriptionController::class, "store"])->name("store");
+});
+
+Route::group(["prefix" => "subscription", "as" => "subscription.", "middleware" => ["auth:web", "verified", "\App\Http\Middleware\Subscribed::class"]], function () {
+    Route::get("/edit", [SubscriptionController::class, "edit"])->name("edit");
+    Route::put("/", [SubscriptionController::class, "update"])->name("update");
+    Route::get("/cancel", [SubscriptionController::class, "cancel"])->name("cancel");
+    Route::delete("/", [SubscriptionController::class, "destroy"])->name("destroy");
+});
+
 
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'auth:admin'], function () {
