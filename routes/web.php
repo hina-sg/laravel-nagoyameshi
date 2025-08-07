@@ -6,6 +6,7 @@ use App\Http\Middleware\NotSubscribed;
 use App\Http\Controllers\UserHomeController;
 use App\Http\Controllers\UserController as UserUserController;
 use App\Http\Controllers\RestaurantController as UserRestaurantController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
@@ -13,8 +14,6 @@ use App\Http\Controllers\Admin\RestaurantController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CompanyController;
 use App\Http\Controllers\Admin\TermController;
-
-
 
 
 /*
@@ -39,11 +38,20 @@ Route::group(['middleware' => 'guest:admin'], function () {
 
 Route::group(['middleware' => 'auth:web'], function() {
     Route::resource('user', UserUserController::class);
+    Route::resource("restaurants.reviews", ReviewController::class)->only(['index']);
 });
 
 Route::group(["prefix" => "subscription", "as" => "subscription.", "middleware" => ["auth:web", "verified", "\App\Http\Middleware\NotSubscribed::class"]], function () {
     Route::get("/create", [SubscriptionController::class, "create"])->name("create");
     Route::post("/", [SubscriptionController::class, "store"])->name("store");
+});
+
+Route::group(["prefix" => "restaurants/{restaurant}/reviews", "as" => "restaurants.reviews.", "middleware" => ["auth:web", "verified", "\App\Http\Middleware\Subscribed::class"]], function () {
+    Route::get("/create", [ReviewController::class, "create"])->name("create");
+    Route::post("/",[ReviewController::class, "store"])->name("store");
+    Route::get("/{review}/edit",[ReviewController::class, "edit"])->name("edit");
+    Route::patch("/{review}",[ReviewController::class, "update"])->name("update");
+    Route::delete("/{review}",[ReviewController::class, "destroy"])->name("destroy");
 });
 
 Route::group(["prefix" => "subscription", "as" => "subscription.", "middleware" => ["auth:web", "verified", "\App\Http\Middleware\Subscribed::class"]], function () {
