@@ -9,6 +9,7 @@ use App\Http\Controllers\RestaurantController as UserRestaurantController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RestaurantController;
@@ -57,11 +58,13 @@ Route::group(["prefix" => "restaurants/{restaurant}/reviews", "as" => "restauran
 
 Route::group(["middleware" => ["auth:web", "verified", "\App\Http\Middleware\Subscribed::class"]], function () {
     Route::resource('reservations', ReservationController::class)->only(["index", "destroy"]);
-});
-
-Route::group(["middleware" => ["auth:web", "verified", "\App\Http\Middleware\Subscribed::class"]], function () {
     Route::resource('restaurants/{restaurant}/reservations', ReservationController::class)->only(["create", "store"])
     ->names(["create" => "restaurants.reservations.create", "store" => "restaurants.reservations.store"]);
+    Route::group(["prefix" => "favorites", "as" => "favorites."], function() {
+        Route::get("/", [FavoriteController::class, "index"])->name("index");
+        Route::post("/{restaurant_id}", [FavoriteController::class, "store"])->name("store");
+        Route::delete("/{restaurant_id}", [FavoriteController::class, "destroy"])->name("destroy");
+    });
 });
 
 Route::group(["prefix" => "subscription", "as" => "subscription.", "middleware" => ["auth:web", "verified", "\App\Http\Middleware\Subscribed::class"]], function () {
