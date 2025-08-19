@@ -44,7 +44,9 @@ class UserTest extends TestCase
 
     public function test_guest_can_not_access_users_show() :void
     {
-        $response = $this->get(route("admin.users.show"));
+        $user = User::factory()->create();
+
+        $response = $this->get(route("admin.users.show", $user->id));
 
         $response->assertRedirect("admin/login");
     }
@@ -52,7 +54,7 @@ class UserTest extends TestCase
     public function test_user_can_not_access_users_show() :void
     {
         $user = User::factory()->create();
-        $response = $this->actingAs($user, "web")->get(route("admin.users.show"));
+        $response = $this->actingAs($user, "web")->get(route("admin.users.show", $user->id));
 
         $response->assertRedirect("admin/login");
     }
@@ -64,7 +66,9 @@ class UserTest extends TestCase
         $admin->password = Hash::make("nagoyameshi");
         $admin->save();
 
-        $response = $this->actingAs($admin, "admin")->get("/admin/users/show");
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($admin, "admin")->get(route("admin.users.show", $user->id));
 
         $response->assertOK();
     }

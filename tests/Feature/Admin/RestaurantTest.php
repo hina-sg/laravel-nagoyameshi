@@ -124,6 +124,7 @@ class RestaurantTest extends TestCase
         $admin->save();
 
         $response = $this->actingAs($admin, "admin")->post(route("admin.restaurants.store", $new_restaurant));
+
         $response->assertRedirect(route("admin.restaurants.index"));
         $this->assertDatabaseHas("restaurants", ["name" => "テスト"]);
     }
