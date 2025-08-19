@@ -43,6 +43,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/')->with(["flash_message" => "ログアウトしました。"]);
+        return redirect('/admin/login')->with(["flash_message" => "ログアウトしました。"]);
     }
 }
